@@ -1,0 +1,24 @@
+volumes:
+  data-vol:
+
+services:
+
+  pgsql:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - data-vol:/var/lib/postgresql/data
+    expose:
+      - 5432
+  python:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - pgsql
+    ports:
+      - 8000:80
