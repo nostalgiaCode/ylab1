@@ -9,7 +9,7 @@ url = URL.create(
     drivername="postgresql",
     username="postgres",
     password="1234",
-    host="localhost", ###docker->pgsql ###pc->localhost
+    host="pgsql", ###docker->pgsql ###pc->localhost
     database="postgres",
     port=5432
 )
