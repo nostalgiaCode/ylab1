@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import (Column, Float, ForeignKey, Integer, String,
+from sqlalchemy import (Column, ForeignKey, String,
                         create_engine)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.engine import URL
@@ -10,7 +10,7 @@ url = URL.create(
     drivername="postgresql",
     username="postgres",
     password="1234",
-    host="pgsql",
+    host="localhost", ###
     database="postgres",
     port=5432
 )
@@ -19,7 +19,7 @@ engine = create_engine(url)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Column, String
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()

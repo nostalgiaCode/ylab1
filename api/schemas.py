@@ -1,7 +1,6 @@
-from pydantic import BaseModel
 from typing import Union
 
-###
+from pydantic import BaseModel
 
 class MenuBase(BaseModel):
     title: str
@@ -14,8 +13,6 @@ class MenuSchema(MenuData):
     submenus_count: int
     dishes_count: int
 
-###
-
 class SubmenuBase(BaseModel):
     title: str
     description: Union[str, None] = None
@@ -26,14 +23,11 @@ class SubmenuData(SubmenuBase):
 class SubmenuSchema(SubmenuData):
     dishes_count: int
 
-# class MenuSchema(BaseModel):
-#     title: str
-#     description: Union[str, None] = None
-
-#class MenuFull(MenuBase):
-
-
 class DishBase(BaseModel):
     title: str
     description: Union[str, None] = None
     price: str
+
+class DishSchema(DishBase):
+
+    id: str
