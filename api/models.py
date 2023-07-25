@@ -2,7 +2,6 @@ import uuid
 
 from sqlalchemy import (Column, ForeignKey, String,
                         create_engine)
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import relationship, sessionmaker
 
@@ -10,7 +9,7 @@ url = URL.create(
     drivername="postgresql",
     username="postgres",
     password="1234",
-    host="pgsql", ###
+    host="localhost", ###docker->pgsql ###pc->localhost
     database="postgres",
     port=5432
 )
