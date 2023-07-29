@@ -1,6 +1,6 @@
 FROM python:3.9-alpine
-WORKDIR /app
-COPY . /app
+WORKDIR /appplication
+COPY . /appplication
 RUN pip install --upgrade pip --user
 RUN pip install -r requirements.txt
 EXPOSE 80

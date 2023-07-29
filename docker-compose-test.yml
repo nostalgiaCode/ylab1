@@ -22,3 +22,11 @@ services:
       - pgsql
     ports:
       - 8000:80
+  test:
+    build:
+      context: ./tests
+      dockerfile: Dockerfile-test
+    depends_on:
+      - python
+    # ports:
+    #   - 8000:80

@@ -30,7 +30,7 @@ class Menu(Base):
     title = Column(String)
     description = Column(String)
     submenu = relationship("Submenu", backref="menu", cascade="all,delete")
-    dish = relationship("Dish", backref="menu", cascade="all,delete")
+    #dish = relationship("Dish", backref="menu", cascade="all,delete")
 
 class Submenu(Base):
     __tablename__ = "Submenu"
