@@ -3,12 +3,7 @@ import pytest
 import json
 
 from utils.crud import *
-
-# параметризация
-# рефакторинг
-# орм запрос
-# column property
-# раздельный dockerfile через папки
+from delete_all_menus import *
 
 target_menu_id = None
 target_menu_title = "My menu 1"
@@ -30,6 +25,7 @@ updated_dish_title = "My updated dish 1"
 updated_dish_description = "My updated dish description 1"
 updated_dish_price = "14.50"
 
+delete_all()
 
 def test_menu():
     response = get_all_menus()
@@ -282,3 +278,5 @@ def test_dishes_and_submenus_in_menu():
     response = get_all_menus()
     assert response.status_code == 200
     assert response.json() == []
+
+delete_all()

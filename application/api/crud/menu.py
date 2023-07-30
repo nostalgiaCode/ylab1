@@ -1,34 +1,45 @@
 from api.models import Menu, session
-from api.schemas import MenuBase, MenuData
-from api.utils import (count_for_many_menus,
-                       count_for_menu, check_exception)
+from api.schemas import MenuBase
+from api.utils import check_exception
 
 def get_all():
-    menu_query = session.query(Menu)
-    return count_for_many_menus(menu_query.all())
+    all_menus = session.query(Menu).all()
+    return [get(all_menus[index].id) for index in range(len(all_menus))]
     
 def get(target_menu_id: str):
-    query = check_exception(target_menu_id)
-    return count_for_menu(MenuData(id = query.id, title = query.title, description = query.description))
+    check_exception(target_menu_id)
+    menu = session.query(Menu).filter_by(id=target_menu_id).first()
+    # return MenuSchema(id = menu.id, title = menu.title, description = menu.description, 
+    #                   submenus_count = session.query(Submenu).filter(Menu.id==menu.id).join(Menu.submenu).count(), 
+    #                   dishes_count = session.query(Dish).filter(Menu.id==menu.id).join(Menu.submenu).join(Submenu.dish).count())
+    return menu.make_response()
 
-def post(menu: MenuBase):
-    query = Menu(**menu.dict())
-    session.add(query)
+def post(input: MenuBase): 
+    menu = Menu(**input.dict())
+    session.add(menu)
     session.commit()
-    return count_for_menu(MenuData(id = query.id, title = query.title, description = query.description))
+    # return MenuSchema(id = menu.id, title = menu.title, description = menu.description, 
+    #                   submenus_count = session.query(Submenu).filter(Menu.id==menu.id).join(Menu.submenu).count(), 
+    #                   dishes_count = session.query(Dish).filter(Menu.id==menu.id).join(Menu.submenu).join(Submenu.dish).count())
+    return menu.make_response()
 
-def patch(target_menu_id: str, menu:MenuBase):
-    query = check_exception(target_menu_id)
-    query.title = menu.title
-    query.description = menu.description
-    session.add(query)
+def patch(target_menu_id: str, input:MenuBase):
+    check_exception(target_menu_id)
+    menu = session.query(Menu).filter_by(id=target_menu_id).first()
+    menu.title = input.title
+    menu.description = input.description
+    session.add(menu)
     session.commit()
-    return count_for_menu(MenuData(id = query.id, title = query.title, description = query.description))
+    # return MenuSchema(id = menu.id, title = menu.title, description = menu.description, 
+    #                   submenus_count = session.query(Submenu).filter(Menu.id==menu.id).join(Menu.submenu).count(), 
+    #                   dishes_count = session.query(Dish).filter(Menu.id==menu.id).join(Menu.submenu).join(Submenu.dish).count())
+    return menu.make_response()
 
 def delete(target_menu_id: str):
-    query = check_exception(target_menu_id)
-    title = query.title
-    session.delete(query)
+    check_exception(target_menu_id)
+    menu = session.query(Menu).filter_by(id=target_menu_id).first()
+    title = menu.title
+    session.delete(menu)
     session.commit()
     return {"menu deleted": title}
     

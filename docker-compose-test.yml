@@ -1,32 +1,50 @@
 volumes:
-  data-vol:
+  test-vol:
+
+networks:
+  test_network:
+    name: test_network
 
 services:
 
   pgsql:
-    image: postgres:15
+    image: postgres:15.1-alpine
     restart: always
     environment:
       POSTGRES_PASSWORD: 1234
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
     volumes:
-      - data-vol:/var/lib/postgresql/data
+      - test-vol:/var/lib/postgresql/data
     expose:
       - 5432
+    ports:
+      - 5432:5432
+    networks:
+      - test_network
+    healthcheck:
+      test: ["CMD-SHELL", "psql -U postgres", "pg_isready", "-U", "postgres", "-d", "postgres"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 5s
   python:
     build:
       context: ./application
       dockerfile: Dockerfile
     depends_on:
-      - pgsql
+      pgsql:
+        condition: service_healthy
     ports:
       - 8000:80
+    networks:
+      - test_network
   test:
     build:
       context: ./tests
       dockerfile: Dockerfile-test
     depends_on:
       - python
-    # ports:
-    #   - 8000:80
+    networks:
+      - test_network
+    command: pytest -v test.py

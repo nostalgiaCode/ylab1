@@ -29,5 +29,4 @@ class DishBase(BaseModel):
     price: str
 
 class DishSchema(DishBase):
-
     id: str

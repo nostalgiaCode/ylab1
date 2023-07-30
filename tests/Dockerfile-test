@@ -1,6 +1,8 @@
-FROM python:3.9-alpine
+FROM python:3.10-slim
 WORKDIR /tests
 COPY . /tests
 RUN pip install pytest
 RUN pip install requests
-CMD pytest test.py
+
+# RUN pytest test.py
+# RUN python delete_all_menus.py

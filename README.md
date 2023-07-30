@@ -1,5 +1,10 @@
 # ylab1
-## Через Docker
+##
+Перейти в корневую папку проекта (где хранятся docker-compose файлы)
+- Запустить приложение "docker-compose -f docker-compose.yml up"
+- Протестировать приложение "docker-compose -f docker-compose-test.yml up" (создаётся отдельный volume, поэтому при тестировании данные в оригинальной БД приложения не используются)
+## (old)
+### Через Docker
 1. загрузить репозиторий
 2. установить docker desktop на windows 10 (Windows 10 64-bit: Home or Pro 21H2 (build 19044) or higher, or Enterprise or Education 21H2 (build 19044) or higher.)
 3. запустить docker desktop
@@ -7,7 +12,7 @@
 5. ввести команду docker compose up
 6. docker всё соберёт и запустит, проект готов к использованию
 7. *БД сохраняет данные при выходе, поэтому если БД не был очищен, то для повторного прохождения тестового сценария нужно удалить volume БД в docker'е
-## Посложнее
+### Посложнее
 1. запустить postgresql 
 2. загрузить репозиторий
 3. в файле api/models.py ввести данные доступа к БД и поменять "host=pgsql" на "host=localhost"

@@ -17,11 +17,11 @@ def get_dish(target_menu_id, target_submenu_id, target_dish_id):
     return requests.get(url)
 
 def get_all_menus():
-    url = host
+    url = "http://python:80/api/v1/menus"
     return requests.get(url)
 
 def get_all_submenus(target_menu_id):
-    url = host + target_menu_id + "/submenus/"
+    url = host + target_menu_id + "/submenus"
     return requests.get(url)
 
 def get_all_dishes(target_menu_id, target_submenu_id):
