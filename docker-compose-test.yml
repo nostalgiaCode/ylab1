@@ -47,4 +47,4 @@ services:
       - python
     networks:
       - test_network
-    command: pytest -v test.py
+    command: python -m pytest test_crud.py test_postman.py -v -s

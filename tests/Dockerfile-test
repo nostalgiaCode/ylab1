@@ -3,6 +3,3 @@ WORKDIR /tests
 COPY . /tests
 RUN pip install pytest
 RUN pip install requests
-
-# RUN pytest test.py
-# RUN python delete_all_menus.py
