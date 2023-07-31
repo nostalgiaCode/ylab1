@@ -15,6 +15,8 @@ def data():
     pytest.updated_submenu_description = "My updated submenu description 1"
 
     pytest.target_dish_id = None
+    pytest.target_dish_1_id = None
+    pytest.target_dish_2_id = None
     pytest.target_dish_title = "My dish 1"
     pytest.target_dish_description = "My dish description 1"
     pytest.target_dish_price = "12.50"
