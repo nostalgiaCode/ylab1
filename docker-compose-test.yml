@@ -6,14 +6,11 @@ networks:
     name: test_network
 
 services:
-
   pgsql:
     image: postgres:15.1-alpine
     restart: always
-    environment:
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
+    env_file:
+      - .env
     volumes:
       - test-vol:/var/lib/postgresql/data
     expose:
@@ -33,10 +30,16 @@ services:
       context: ./application
       dockerfile: Dockerfile
     depends_on:
-      pgsql:
-        condition: service_healthy
+      - pgsql
+      - redis
     ports:
       - 8000:80
+    networks:
+      - test_network
+    env_file:
+      - .env
+  redis:
+    image: redis:latest
     networks:
       - test_network
   test:

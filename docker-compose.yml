@@ -3,16 +3,13 @@ volumes:
 networks:
   app_network:
     name: app_network
-    
-services:
 
+services:
   pgsql:
     image: postgres:15.1-alpine
     restart: always
-    environment:
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
+    env_file:
+      - .env
     volumes:
       - data-vol:/var/lib/postgresql/data
     expose:
@@ -27,14 +24,20 @@ services:
       timeout: 30s
       retries: 5
       start_period: 5s
+  redis:
+    image: redis:latest
+    networks:
+      - app_network
   python:
     build:
       context: ./application
       dockerfile: Dockerfile
     depends_on:
-      pgsql:
-        condition: service_healthy
+      - pgsql
+      - redis
     ports:
       - 8000:80
     networks:
       - app_network
+    env_file:
+      - .env
