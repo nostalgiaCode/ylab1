@@ -23,7 +23,7 @@ session = Session()
 Base = declarative_base()
 
 
-class Menu(Base):
+class Menu(Base):  # type: ignore
     __tablename__ = 'Menu'
 
     id = Column(String, default=lambda: str(uuid.uuid4()), unique=True, primary_key=True)
@@ -46,7 +46,7 @@ class Menu(Base):
         }
 
 
-class Submenu(Base):
+class Submenu(Base):  # type: ignore
     __tablename__ = 'Submenu'
 
     id = Column(String, default=lambda: str(uuid.uuid4()), unique=True, primary_key=True)
@@ -69,7 +69,7 @@ class Submenu(Base):
         }
 
 
-class Dish(Base):
+class Dish(Base):  # type: ignore
     __tablename__ = 'Dish'
 
     id = Column(String, default=lambda: str(uuid.uuid4()), unique=True, primary_key=True)

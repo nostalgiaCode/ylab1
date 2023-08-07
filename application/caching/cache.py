@@ -3,7 +3,7 @@ import json
 import redis  # type ignore[import]
 
 
-def keygenerator(key: str, key2: str = None, key3: str = None):
+def keygenerator(key: str, key2: None | str = None, key3: None | str = None):
     if key2 is None and key3 is None:
         return key
     elif key3 is None:
@@ -24,7 +24,7 @@ class RedisBase:
         for key in self.r.scan_iter(f'*{key}*'):
             self.r.delete(key)
 
-    def read(self, key: str, key2: str = None, key3: str = None):
+    def read(self, key: str, key2: None | str = None, key3: None | str = None):
         key = keygenerator(key=key, key2=key2, key3=key3)
         value = self.r.get(key)
         if value is not None:
@@ -32,7 +32,8 @@ class RedisBase:
         else:
             return None
 
-    def save(self, key: str, json_object: json):
+    # def save(self, key: str, json_object: json):
+    def save(self, key: str, json_object: bytes | float | int | str):
         self.r.set(key, json_object)
 
 
@@ -54,17 +55,17 @@ class Invalidate(RedisBase):
 
 
 class RedisRepo(Invalidate):
-    def save_menu(self, menu_id: str, json_object: json):
+    def save_menu(self, menu_id: str, json_object: bytes | float | int | str):
         key = f'{menu_id}'
         self.invalidate_menu('menus')
         self.save(key, json_object)
 
-    def save_submenu(self, menu_id: str, submenu_id: str, json_object: json):
+    def save_submenu(self, menu_id: str, submenu_id: str, json_object: bytes | float | int | str):
         key = f'{menu_id}:{submenu_id}'
         self.save(key, json_object)
         self.invalidate_menu(menu_id)
 
-    def save_dish(self, menu_id: str, submenu_id: str, dish_id: str, json_object: json):
+    def save_dish(self, menu_id: str, submenu_id: str, dish_id: str, json_object: bytes | float | int | str):
         key = f'{menu_id}:{submenu_id}:{dish_id}'
         self.save(key, json_object)
         self.invalidate_submenu(menu_id, submenu_id)
