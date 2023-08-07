@@ -1,7 +1,7 @@
 import uuid
 
 from data.schemas import DishSchema, MenuSchema, SubmenuSchema
-from settings import *
+from settings import POSTGRESDB, POSTGRESHOST, POSTGRESPASSWORD, POSTGRESUSERNAME
 from sqlalchemy import Column, ForeignKey, Numeric, String, create_engine
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
@@ -31,19 +31,20 @@ class Menu(Base):
     description = Column(String)
     submenu = relationship('Submenu', backref='menu', cascade='all,delete')
 
-    def dict(self):
+    def schema(self):
         return MenuSchema(id=self.id, title=self.title, description=self.description,
                           submenus_count=session.query(Submenu).filter(Menu.id == self.id).join(Menu.submenu).count(),
                           dishes_count=session.query(Dish).filter(Menu.id == self.id).join(Menu.submenu).join(Submenu.dish).count())
 
     def serialize(self):
         return {
-            "id" : self.id,
-            "title": self.title,
-            "description": self.description,
-            "submenus_count": session.query(Submenu).filter(Menu.id == self.id).join(Menu.submenu).count(),
-            "dishes_count": session.query(Dish).filter(Menu.id == self.id).join(Menu.submenu).join(Submenu.dish).count()
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'submenus_count': session.query(Submenu).filter(Menu.id == self.id).join(Menu.submenu).count(),
+            'dishes_count': session.query(Dish).filter(Menu.id == self.id).join(Menu.submenu).join(Submenu.dish).count()
         }
+
 
 class Submenu(Base):
     __tablename__ = 'Submenu'
@@ -54,18 +55,19 @@ class Submenu(Base):
     description = Column(String)
     dish = relationship('Dish', backref='submenu', cascade='all,delete')
 
-    def dict(self):
+    def schema(self) -> SubmenuSchema:
         return SubmenuSchema(id=self.id, title=self.title, description=self.description,
                              dishes_count=session.query(Dish).filter(Submenu.id == self.id).join(Submenu.dish).count())
 
     def serialize(self):
         return {
-            "id" : self.id,
-            "menu_id": self.menu_id,
-            "title": self.title,
-            "description": self.description,
-            "dishes_count": session.query(Dish).filter(Submenu.id == self.id).join(Submenu.dish).join(Submenu.dish).count()
+            'id': self.id,
+            'menu_id': self.menu_id,
+            'title': self.title,
+            'description': self.description,
+            'dishes_count': session.query(Dish).filter(Submenu.id == self.id).join(Submenu.dish).join(Submenu.dish).count()
         }
+
 
 class Dish(Base):
     __tablename__ = 'Dish'
@@ -77,18 +79,18 @@ class Dish(Base):
     description = Column(String)
     price = Column(Numeric(precision=10, scale=2))
 
-    def dict(self):
+    def schema(self) -> DishSchema:
         return DishSchema(id=self.id, price=str(self.price), title=self.title, description=self.description)
 
     def serialize(self):
         return {
-            "id" : self.id,
-            "menu_id": self.menu_id,
-            "submenu_id": self.submenu_id,
-            "title": self.title,
-            "description": self.description,
-            "price": str(self.price)
+            'id': self.id,
+            'menu_id': self.menu_id,
+            'submenu_id': self.submenu_id,
+            'title': self.title,
+            'description': self.description,
+            'price': str(self.price)
         }
-    
+
 
 Base.metadata.create_all(engine)

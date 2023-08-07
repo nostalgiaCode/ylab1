@@ -2,7 +2,7 @@ from data.models import Dish, Menu, Submenu, session
 from fastapi import HTTPException
 
 
-def check_exception(menu_id=None, submenu_id=None, dish_id=None):
+def check_exception(menu_id=None, submenu_id=None, dish_id=None) -> None:
     if menu_id is not None:
         query = session.query(Menu).filter_by(id=menu_id).first()
         if query is None:

@@ -1,54 +1,48 @@
-from data.submenu_repository import SubmenuRepository
-from caching.cache import RedisCache
 import json
-from data.schemas import SubmenuBase
+
+from caching.cache import RedisRepo
+from data.schemas import SubmenuBase, SubmenuSchema
+from data.submenu_repository import SubmenuRepository
+
 
 class SubmenuService:
     def __init__(self, session, r):
         self.submenu_repo = SubmenuRepository(session)
         self.session = session
-        self.red = RedisCache(r)
+        self.red = RedisRepo(r)
 
-    def get(self, submenu_id):
-        if self.red.cache_get(submenu_id) is not None:
-            print("Cache worked fine!")
-            return self.red.cache_get(submenu_id)
+    def get(self, menu_id: str, submenu_id) -> dict:
+        if self.red.read(key=menu_id, key2=submenu_id) is not None:
+            print('Cache worked fine!')
+            return self.red.read(menu_id=menu_id, submenu_id=submenu_id)
         else:
-            submenu = self.submenu_repo.get(submenu_id).dict()
-            self.red.cache_set(submenu_id, json.dumps(submenu))
+            submenu = self.submenu_repo.get(submenu_id)
+            self.red.save_submenu(menu_id=menu_id, submenu_id=submenu_id, json_object=json.dumps(submenu))
             return submenu
 
-    def list(self, menu_id: str):
-        redisstring = "submenus on menu id : " + menu_id
-        print(redisstring)
-        if self.red.cache_get(redisstring) is not None:
-            print("Cache worked fine!")
-            return self.red.cache_get(redisstring)
+    def list(self, menu_id: str) -> list:
+        rstring = f'{menu_id}:submenus'
+        if self.red.read(rstring) is not None:
+            print('Cache worked fine!')
+            return self.red.read(rstring)
         else:
             submenus = self.submenu_repo.list(menu_id=menu_id)
-            self.red.cache_set(redisstring, json.dumps(submenus))
+            self.red.save_submenu(menu_id=menu_id, submenu_id='submenus', json_object=json.dumps(submenus))
             return submenus
 
-    def add(self, menu_id: str, submenu: SubmenuBase):
-        redisstring = "submenus on menu id : " + menu_id
-        submenu = self.submenu_repo.add(menu_id = menu_id, title = submenu.title, description = submenu.description)
-        self.session.commit()
-        self.red.cache_delete("menus")
-        self.red.cache_delete(redisstring)
-        return submenu
+    def add(self, menu_id: str, submenubase: SubmenuBase) -> SubmenuSchema:
+        # rstring = f'{menu_id}:submenus'
+        submenu = self.submenu_repo.add(menu_id=menu_id, title=submenubase.title, description=submenubase.description)
+        self.red.save_submenu(menu_id=menu_id, submenu_id=submenu.id, json_object=json.dumps(submenu.serialize()))
+        return submenu.schema()
 
-    def update(self, menu_id: str, submenu_id: str, submenu: SubmenuBase):
-        submenu = self.submenu_repo.update(menu_id = menu_id, submenu_id=submenu_id,
-                                            title = submenu.title, description = submenu.description)
-        redisstring = "submenus on menu id : " + menu_id
-        self.red.cache_delete(redisstring)
-        self.red.cache_delete(submenu_id)
-        return submenu
+    def update(self, menu_id: str, submenu_id: str, submenu: SubmenuBase) -> SubmenuSchema:
+        submenu = self.submenu_repo.update(menu_id=menu_id, submenu_id=submenu_id,
+                                           title=submenu.title, description=submenu.description)
+        self.red.save_submenu(menu_id=menu_id, submenu_id=submenu.id, json_object=json.dumps(submenu.serialize()))
+        return submenu.schema()
 
-    def delete(self, menu_id: str, submenu_id: str):
+    def delete(self, menu_id: str, submenu_id: str) -> dict:
         submenu = self.submenu_repo.delete(submenu_id)
-        self.red.cache_delete("menus")
-        self.red.cache_delete("submenus on menu id : " + menu_id)
-        self.red.cache_delete(submenu_id)
-        self.red.cache_delete(menu_id)
+        self.red.invalidate_submenu(menu_id=menu_id, submenu_id=submenu_id)
         return submenu
