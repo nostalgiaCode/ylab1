@@ -1,4 +1,4 @@
-import requests
+import requests  # type: ignore
 
 # host = 'http://127.0.0.1:8000/api/v1/menus/'  # -> localhost
 host = 'http://python:80/api/v1/menus/'

@@ -1,6 +1,6 @@
 import json
 
-import redis  # type ignore[import]
+import redis  # type: ignore
 
 
 def keygenerator(key: str, key2: None | str = None, key3: None | str = None):

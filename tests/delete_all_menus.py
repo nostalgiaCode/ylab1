@@ -1,4 +1,4 @@
-import requests
+import requests  # type: ignore
 
 # url = 'http://python:80/api/v1/menus'  # -> docker
 url = 'http://127.0.0.1:8000/api/v1/menus'  # ->from local to docker
