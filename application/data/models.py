@@ -31,12 +31,12 @@ class Menu(Base):  # type: ignore
     description = Column(String)
     submenu = relationship('Submenu', backref='menu', cascade='all,delete')
 
-    def schema(self):
+    def schema(self) -> MenuSchema:
         return MenuSchema(id=self.id, title=self.title, description=self.description,
                           submenus_count=session.query(Submenu).filter(Menu.id == self.id).join(Menu.submenu).count(),
                           dishes_count=session.query(Dish).filter(Menu.id == self.id).join(Menu.submenu).join(Submenu.dish).count())
 
-    def serialize(self):
+    def serialize(self) -> dict:
         return {
             'id': self.id,
             'title': self.title,
@@ -59,7 +59,7 @@ class Submenu(Base):  # type: ignore
         return SubmenuSchema(id=self.id, title=self.title, description=self.description,
                              dishes_count=session.query(Dish).filter(Submenu.id == self.id).join(Submenu.dish).count())
 
-    def serialize(self):
+    def serialize(self) -> dict:
         return {
             'id': self.id,
             'menu_id': self.menu_id,
@@ -82,7 +82,7 @@ class Dish(Base):  # type: ignore
     def schema(self) -> DishSchema:
         return DishSchema(id=self.id, price=str(self.price), title=self.title, description=self.description)
 
-    def serialize(self):
+    def serialize(self) -> dict:
         return {
             'id': self.id,
             'menu_id': self.menu_id,

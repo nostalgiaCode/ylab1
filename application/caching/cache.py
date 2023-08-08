@@ -3,7 +3,7 @@ import json
 import redis  # type: ignore
 
 
-def keygenerator(key: str, key2: None | str = None, key3: None | str = None):
+def keygenerator(key: str, key2: None | str = None, key3: None | str = None) -> str:
     if key2 is None and key3 is None:
         return key
     elif key3 is None:
@@ -24,7 +24,7 @@ class RedisBase:
         for key in self.r.scan_iter(f'*{key}*'):
             self.r.delete(key)
 
-    def read(self, key: str, key2: None | str = None, key3: None | str = None):
+    def read(self, key: str, key2: None | str = None, key3: None | str = None) -> bytes | float | int | str | None:
         key = keygenerator(key=key, key2=key2, key3=key3)
         value = self.r.get(key)
         if value is not None:

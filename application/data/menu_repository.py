@@ -16,13 +16,13 @@ class MenuRepository:
             menus.serialize() for menus in self.session.query(MenuDB).all()
         ]
 
-    def add(self, title: str, description: str):
+    def add(self, title: str, description: str) -> MenuDB:
         menu: MenuDB = MenuDB(title=title, description=description)
         self.session.add(menu)
         self.session.commit()
         return menu
 
-    def update(self, menu_id: str, title: str, description: str):
+    def update(self, menu_id: str, title: str, description: str) -> MenuDB:
         check_exception(menu_id=menu_id)
         menu: MenuDB = self.session.query(MenuDB).filter_by(id=menu_id).first()
         menu.title = title
