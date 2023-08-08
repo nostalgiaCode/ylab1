@@ -32,9 +32,8 @@ class RedisBase:
         else:
             return None
 
-    # def save(self, key: str, json_object: json):
     def save(self, key: str, json_object: bytes | float | int | str):
-        self.r.set(key, json_object)
+        self.r.setex(key, self.tte, json_object)
 
 
 class Invalidate(RedisBase):
